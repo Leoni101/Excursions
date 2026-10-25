@@ -8,7 +8,7 @@
     <ul>
         {% for b in bookings %}
             <li>
-                Бронь №{{ b.id }}: {{ b.excursion.title }} на {{ b.date }} 
+                Бронь №{{ b.id }}: {{ b.title }} на {{ b.date }} 
                 {% if b.is_cancelled %}
                     <span style="color: red;">(Отменено)</span>
                 {% else %}
