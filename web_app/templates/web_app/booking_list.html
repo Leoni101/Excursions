@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Мои бронирования{% endblock %}
+
+{% block content %}
+    <h1>Мои бронирования</h1>
+    
+    <ul>
+        {% for b in bookings %}
+            <li>
+                Бронь №{{ b.id }}: {{ b.excursion.title }} на {{ b.date }} 
+                {% if b.is_cancelled %}
+                    <span style="color: red;">(Отменено)</span>
+                {% else %}
+                    <span style="color: green;">(Активно)</span>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Броней пока нет.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

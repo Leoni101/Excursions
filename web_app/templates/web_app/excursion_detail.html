@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ excursion.title }}{% endblock %}
+
+{% block content %}
+    {% if excursion %}
+        <h1>{{ excursion.title }}</h1>
+        <p><strong>Длительность:</strong> {{ excursion.duration }} ч.</p>
+        <p><strong>Цена:</strong> {{ excursion.price }} руб.</p>
+        <a href="{% url 'web_app:excursion_list' %}">← Назад к списку</a>
+    {% else %}
+        <h1 style="color: red;">404 - Экскурсия не найдена</h1>
+        <a href="{% url 'web_app:excursion_list' %}">← Назад к списку</a>
+    {% endif %}
+{% endblock %}

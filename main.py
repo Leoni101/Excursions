@@ -1,49 +1,84 @@
-from datetime import date
+from storage import load_excursions, save_excursions, load_bookings, save_bookings
+from models import Booking
+from utils import input_int, input_date
 
-excursion_title = "Обзорная экскурсия по городу"
-excursion_price = 1500.0          # float
-excursion_duration = 3            # int (часы)
-excursion_available = True        # bool
+EXCURSIONS_FILE = "data/excursions.json"
+BOOKINGS_FILE = "data/bookings.json"
 
-booking_date = date(2026, 9, 15)
-user_name = "Лиза"
-user_age = 20
+def main():
+    excursions = load_excursions(EXCURSIONS_FILE)
+    bookings = load_bookings(BOOKINGS_FILE, excursions)
 
+    while True:
+        print("\n=== МЕНЮ ===")
+        print("1. Показать экскурсии")
+        print("2. Забронировать")
+        print("3. Отменить бронь")
+        print("0. Выход")
+        
+        choice = input("Выберите пункт: ")
+        
+        if choice == "1":
+            for e in excursions:
+                print(e)
+                
+        elif choice == "2":
+            for e in excursions:
+                print(e)
+            exc_id = input_int("Введите ID экскурсии: ")
+            
+            # Простой поиск экскурсии
+            excursion = None
+            for e in excursions:
+                if e.id == exc_id:
+                    excursion = e
+                    break
+            
+            if excursion is None:
+                print("Экскурсия не найдена.")
+                continue
+                
+            date = input_date("Введите дату (ГГГГ-ММ-ДД): ")
+            
+            # Простая проверка на занятость
+            busy = False
+            for b in bookings:
+                if b.excursion.id == exc_id and b.date == date and b.is_cancelled == False:
+                    busy = True
+                    break
+                    
+            if busy == True:
+                print("Эта дата уже занята!")
+            else:
+                new_id = 1
+                for b in bookings:
+                    if b.id >= new_id:
+                        new_id = b.id + 1
+                        
+                new_booking = Booking(new_id, excursion, date)
+                bookings.append(new_booking)
+                print("Успешно забронировано!")
+                
+        elif choice == "3":
+            b_id = input_int("Введите ID брони: ")
+            booking = None
+            for b in bookings:
+                if b.id == b_id:
+                    booking = b
+                    break
+                    
+            if booking is not None:
+                booking.cancel()
+                print("Бронь отменена.")
+            else:
+                print("Бронь не найдена.")
+                
+        elif choice == "0":
+            break
 
-# Функция 1: информация об экскурсии
-def get_excursion_info(title, price, duration): #Возвращает строку с информацией об экскурсии.
-    info = (
-        f"Экскурсия: {title}\n"
-        f"Стоимость: {price} руб.\n"
-        f"Длительность: {duration} ч."
-    )
-    return info
+    save_excursions(EXCURSIONS_FILE, excursions)
+    save_bookings(BOOKINGS_FILE, bookings)
+    print("Данные сохранены. Пока!")
 
-
-# Функция 2: проверка доступности даты
-def is_date_available(is_available, booking_day): #Проверяет, доступна ли дата для бронирования.
-    if is_available:
-        return f"Дата {booking_day} доступна для бронирования"
-    else:
-        return f"Дата {booking_day} недоступна"
-
-
-# Функция 3: расчёт стоимости
-def calculate_total_price(price, persons): #Считает итоговую стоимость для нескольких человек.
-    if persons <= 0:
-        return "Количество человек должно быть больше нуля"
-    total = price * persons
-    return f"Итоговая стоимость для {persons} чел.: {total} руб."
-
-
-print("Сервис бронированя экскурсий \n")
-
-# 1. Показываем информацию об экскурсии
-print(get_excursion_info(excursion_title, excursion_price, excursion_duration))
-
-# 2. Проверяем доступность даты
-print(is_date_available(excursion_available, booking_date))
-
-# 3. Считаем стоимость для 2 человек
-persons = int(input("Сколько человек хотите записать? "))
-print(calculate_total_price(excursion_price, persons))
+if __name__ == "__main__":
+    main()

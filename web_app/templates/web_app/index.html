@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Сервис бронирования{% endblock %}
+
+{% block content %}
+    <h1>Сервис бронирования экскурсий</h1>
+    <p>Добро пожаловать в нашу систему.</p>
+    <a href="{% url 'web_app:excursion_list' %}" class="btn">Посмотреть экскурсии</a>
+{% endblock %}

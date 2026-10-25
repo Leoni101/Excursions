@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Список экскурсий{% endblock %}
+
+{% block content %}
+    <h1>Доступные экскурсии</h1>
+    <p>Всего экскурсий: {{ excursions|length }}</p>
+
+    <ul class="excursion-list">
+        {% for e in excursions %}
+            <li>
+                <a href="{% url 'web_app:excursion_detail' e.id %}">{{ e.title|default:"Без названия" }}</a>
+                - {{ e.price }} руб.
+            </li>
+        {% empty %}
+            <li>Экскурсии не найдены.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

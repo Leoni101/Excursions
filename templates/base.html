@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Экскурсии{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'web_app/css/style.css' %}">
+</head>
+<body>
+    {% include "includes/navigation.html" %}
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script src="{% static 'web_app/js/main.js' %}"></script>
+</body>
+</html>
