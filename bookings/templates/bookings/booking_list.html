@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Список бронирований{% endblock %}
+
+{% block content %}
+    <h1>Список бронирований</h1>
+
+    <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
+        <input type="text" name="q" value="{{ q }}" placeholder="Поиск по экскурсии или клиенту...">
+        <select name="status">
+            <option value="all" {% if status_filter == "all" %}selected{% endif %}>Все статусы</option>
+            <option value="active" {% if status_filter == "active" %}selected{% endif %}>Только активные</option>
+            <option value="cancelled" {% if status_filter == "cancelled" %}selected{% endif %}>Только отменённые</option>
+        </select>
+        <button type="submit">Фильтровать</button>
+        <a href="{% url 'bookings:booking_list' %}">Сбросить</a>
+    </form>
+
+    <ul>
+        {% for b in bookings %}
+            <li style="margin-bottom: 10px;">
+                <a href="{% url 'bookings:booking_detail' b.id %}">Бронь №{{ b.id }}</a>:
+                <a href="{% url 'excursions:excursion_detail' b.excursion.id %}">{{ b.excursion.title }}</a>
+                — клиент <strong>{{ b.user.full_name }}</strong>, дата <strong>{{ b.date }}</strong> ({{ b.participants }} чел.)
+                {% include "bookings/includes/booking_status.html" %}
+                {% if not b.is_cancelled %}
+                    <form method="post" action="{% url 'bookings:cancel_booking' b.id %}" style="display: inline; margin-left: 8px;">
+                        {% csrf_token %}
+                        <button type="submit">Отменить</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Броней пока нет.</li>
+        {% endfor %}
+    </ul>
+
+    {% if page_obj.has_other_pages %}
+        <div style="margin-top: 20px;">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&status={{ status_filter }}&q={{ q }}">← Назад</a>
+            {% endif %}
+            <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&status={{ status_filter }}&q={{ q }}">Вперёд →</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

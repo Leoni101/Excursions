@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Список экскурсий{% endblock %}
+
+{% block content %}
+    <h1>Доступные экскурсии</h1>
+
+    <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Поиск по названию...">
+        <select name="category">
+            <option value="">Все категории</option>
+            {% for cat in categories %}
+                <option value="{{ cat.slug }}" {% if selected_category == cat.slug %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <input type="number" name="max_price" value="{{ max_price }}" placeholder="Цена до (руб.)" min="0">
+        <select name="sort">
+            <option value="title" {% if sort_param == "title" %}selected{% endif %}>По названию (А–Я)</option>
+            <option value="-title" {% if sort_param == "-title" %}selected{% endif %}>По названию (Я–А)</option>
+            <option value="price" {% if sort_param == "price" %}selected{% endif %}>Сначала дешевле</option>
+            <option value="-price" {% if sort_param == "-price" %}selected{% endif %}>Сначала дороже</option>
+            <option value="duration" {% if sort_param == "duration" %}selected{% endif %}>По длительности</option>
+            <option value="popular" {% if sort_param == "popular" %}selected{% endif %}>По популярности</option>
+        </select>
+        <button type="submit">Применить</button>
+        <a href="{% url 'excursions:excursion_list' %}">Сбросить</a>
+    </form>
+
+    <p>
+        Найдено: <strong>{{ filtered_summary.found_count }}</strong>
+        {% if filtered_summary.avg_price %}
+            | Средняя цена: <strong>{{ filtered_summary.avg_price|floatformat:0 }} руб.</strong>
+        {% endif %}
+    </p>
+
+    <ul>
+        {% for e in excursions %}
+            {% include "excursions/includes/excursion_card.html" %}
+        {% empty %}
+            <li>Экскурсии не найдены.</li>
+        {% endfor %}
+    </ul>
+
+    {% if page_obj.has_other_pages %}
+        <div style="margin-top: 20px;">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}&category={{ selected_category }}&max_price={{ max_price }}&sort={{ sort_param }}">← Назад</a>
+            {% endif %}
+            <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&q={{ search_query }}&category={{ selected_category }}&max_price={{ max_price }}&sort={{ sort_param }}">Вперёд →</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ excursion.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ excursion.title }}</h1>
+    {% if excursion.category %}
+        <p><strong>Категория:</strong> {{ excursion.category.name }}</p>
+    {% endif %}
+    <p><strong>Длительность:</strong> {{ excursion.duration }} ч.</p>
+    <p><strong>Цена:</strong> {{ excursion.price }} руб.</p>
+    {% if excursion.description %}<p>{{ excursion.description }}</p>{% endif %}
+
+    <hr>
+    <h2>Оформить бронирование</h2>
+    <form method="post" style="margin-bottom: 20px;">
+        {% csrf_token %}
+        <div style="margin-bottom: 8px;">
+            <label>ФИО клиента:
+                <input type="text" name="full_name" value="{{ form_data.full_name }}" required
+                       minlength="2"
+                       pattern="[А-Яа-яЁёA-Za-z\s\-]{2,120}"
+                       title="Имя должно содержать только буквы (без цифр)"
+                       placeholder="Анна Смирнова">
+            </label>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <label>Email:
+                <input type="email" name="email" value="{{ form_data.email }}" required placeholder="anna@example.com">
+            </label>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <label>Телефон (от 10 цифр):
+                <input type="tel" name="phone" value="{{ form_data.phone }}" required
+                       minlength="10" maxlength="20"
+                       pattern="[\d\s\+\-\(\)]{10,20}"
+                       title="Введите номер телефона (минимум 10 цифр)"
+                       placeholder="+7 (999) 111-22-33">
+            </label>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <label>Дата:
+                <input type="date" name="date" value="{{ form_data.date }}" min="{{ today_iso }}" required>
+            </label>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <label>Участников:
+                <input type="number" name="participants" value="{{ form_data.participants }}" min="1" max="20" required>
+            </label>
+        </div>
+        <button type="submit">Забронировать</button>
+    </form>
+
+    <h3>Занятые ближайшие даты</h3>
+    <ul>
+        {% for b in upcoming_bookings %}
+            <li>{{ b.date }} — {{ b.user.full_name }} ({{ b.participants }} чел.)</li>
+        {% empty %}
+            <li>Все ближайшие даты свободны.</li>
+        {% endfor %}
+    </ul>
+
+    <p><a href="{% url 'excursions:excursion_list' %}">← Назад к списку экскурсий</a></p>
+{% endblock %}

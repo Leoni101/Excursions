@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Бронирование №{{ booking.id }}{% endblock %}
+
+{% block content %}
+    <h1>Бронирование №{{ booking.id }}</h1>
+    <p><strong>Экскурсия:</strong> <a href="{% url 'excursions:excursion_detail' booking.excursion.id %}">{{ booking.excursion.title }}</a></p>
+    <p><strong>Клиент:</strong> {{ booking.user.full_name }} ({{ booking.user.email }})</p>
+    <p><strong>Дата:</strong> {{ booking.date }}</p>
+    <p><strong>Участников:</strong> {{ booking.participants }}</p>
+    <p><strong>Итоговая стоимость:</strong> {{ total_cost }} руб.</p>
+    <p><strong>Статус:</strong> {% with b=booking %}{% include "bookings/includes/booking_status.html" %}{% endwith %}</p>
+
+    {% if not booking.is_cancelled %}
+        <form method="post" action="{% url 'bookings:cancel_booking' booking.id %}" style="margin-bottom: 15px;">
+            {% csrf_token %}
+            <button type="submit">Отменить бронирование</button>
+        </form>
+    {% endif %}
+
+    <a href="{% url 'bookings:booking_list' %}">← Назад к списку бронирований</a>
+{% endblock %}

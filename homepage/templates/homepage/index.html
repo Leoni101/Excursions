@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Сервис бронирования экскурсий{% endblock %}
+
+{% block content %}
+    <h1>Сервис бронирования экскурсий</h1>
+
+    <p>
+        Активных экскурсий: <strong>{{ stats.total|default:0 }}</strong> |
+        Средняя цена: <strong>{{ stats.avg_price|floatformat:0|default:0 }} руб.</strong> |
+        Активных броней: <strong>{{ active_bookings }}</strong>
+    </p>
+
+    <h2>Категории экскурсий</h2>
+    <ul>
+        {% for cat in categories %}
+            <li>
+                <a href="{% url 'excursions:excursion_list' %}?category={{ cat.slug }}">{{ cat.name }}</a>
+                ({{ cat.excursions_count }})
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Популярные экскурсии</h2>
+    <ul>
+        {% for e in popular_excursions %}
+            {% include "excursions/includes/excursion_card.html" %}
+        {% empty %}
+            <li>Экскурсии пока не добавлены.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'excursions:excursion_list' %}">Перейти в каталог экскурсий →</a>
+{% endblock %}

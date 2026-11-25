@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика сервиса{% endblock %}
+
+{% block content %}
+    <h1>Статистика бронирований и экскурсий</h1>
+
+    <h2>Общие показатели бронирований</h2>
+    <ul>
+        <li>Всего бронирований: <strong>{{ booking_summary.total }}</strong></li>
+        <li>Активных: <strong>{{ booking_summary.active }}</strong></li>
+        <li>Отменённых: <strong>{{ booking_summary.cancelled }}</strong></li>
+        <li>Участников в активных бронях: <strong>{{ booking_summary.total_participants|default:0 }}</strong></li>
+    </ul>
+
+    <h2>Статистика по экскурсиям</h2>
+    <ul>
+        {% for exc in by_excursion %}
+            <li>
+                {{ exc.title }} — активных броней: <strong>{{ exc.bookings_count }}</strong>,
+                участников: <strong>{{ exc.guests_sum|default:0 }}</strong>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Активные клиенты</h2>
+    <ul>
+        {% for u in top_users %}
+            <li>{{ u.full_name }} ({{ u.email }}) — броней: <strong>{{ u.bookings_count }}</strong></li>
+        {% empty %}
+            <li>Активных клиентов пока нет.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,10 @@
+<li style="margin-bottom: 10px;">
+    <a href="{% url 'excursions:excursion_detail' e.id %}">
+        <strong>{{ e.title }}</strong>
+    </a>
+    {% if e.category %}[{{ e.category.name }}]{% endif %}
+    — {{ e.price }} руб. ({{ e.duration }} ч.)
+    {% if e.active_bookings_count is not None %}
+        | Активных броней: {{ e.active_bookings_count }}
+    {% endif %}
+</li>

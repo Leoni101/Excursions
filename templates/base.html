@@ -4,16 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Экскурсии{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'web_app/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'homepage/css/style.css' %}">
 </head>
 <body>
     {% include "includes/navigation.html" %}
 
     <main class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li style="padding: 8px; margin-bottom: 10px; border: 1px solid #ccc;">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
         {% block content %}
         {% endblock %}
+
+        {% if request.resolver_match.url_name != 'index' %}
+            <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee;">
+                <a href="{% url 'homepage:index' %}" class="btn">← Вернуться на главную</a>
+            </div>
+        {% endif %}
     </main>
 
-    <script src="{% static 'web_app/js/main.js' %}"></script>
+    <script src="{% static 'homepage/js/main.js' %}"></script>
 </body>
 </html>

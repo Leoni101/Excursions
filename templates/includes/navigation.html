@@ -1,5 +1,12 @@
-<nav class="navbar">
-    <a href="{% url 'web_app:index' %}">Главная</a>
-    <a href="{% url 'web_app:excursion_list' %}">Экскурсии</a>
-    <a href="{% url 'web_app:booking_list' %}">Мои бронирования</a>
+{% load static %}
+<nav class="navbar" style="display: flex; align-items: center; gap: 15px;">
+    <a href="{% url 'homepage:index' %}" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+        <img src="{% static 'homepage/img/logo.png' %}" alt="Логотип" width="32" height="32">
+        <strong>Excursions</strong>
+    </a>
+    <a href="{% url 'homepage:index' %}">Главная</a>
+    <a href="{% url 'excursions:excursion_list' %}">Экскурсии</a>
+    <a href="{% url 'excursions:available' %}">Свободные даты</a>
+    <a href="{% url 'bookings:booking_list' %}">Бронирования</a>
+    <a href="{% url 'bookings:statistics' %}">Статистика</a>
 </nav>

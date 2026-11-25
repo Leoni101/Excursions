@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Свободные экскурсии на дату{% endblock %}
+
+{% block content %}
+    <h1>Поиск свободных экскурсий на дату</h1>
+
+    <form method="get" style="margin-bottom: 20px;">
+        <label>Выберите дату: <input type="date" name="date" value="{{ selected_date }}" min="{{ today_iso }}"></label>
+        <button type="submit">Проверить</button>
+    </form>
+
+    <p>Свободные экскурсии на <strong>{{ selected_date }}</strong> ({{ free_excursions|length }}):</p>
+    <ul>
+        {% for e in free_excursions %}
+            {% include "excursions/includes/excursion_card.html" %}
+        {% empty %}
+            <li>На выбранную дату свободных экскурсий нет.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
